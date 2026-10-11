@@ -10,7 +10,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from scriber.config import Media, Settings
-from scriber.constants import ENHANCE_CHANNELS, ENHANCED_SUFFIX, FFMPEG, FFPROBE
+from scriber.constants import ENHANCE_CHANNELS, ENHANCED_SUFFIX, FFMPEG, FFMPEG_PROTOCOL_WHITELIST, FFPROBE
 
 __all__ = ["MediaFile", "build_enhance_command", "enhance_audio", "find_media", "has_audio_stream", "require_tool"]
 
@@ -69,7 +69,8 @@ def find_media(sources: Iterable[Path], settings: Settings) -> list[MediaFile]:
 def build_enhance_command(source: Path, target: Path, ffmpeg_filter: str, sample_rate: int) -> list[str]:
     return [
         FFMPEG, "-y", "-hide_banner", "-loglevel", "error",
-        "-i", str(source),
+        *FFMPEG_PROTOCOL_WHITELIST,
+        "-i", str(source.absolute()),
         "-vn",
         "-af", ffmpeg_filter,
         "-ac", str(ENHANCE_CHANNELS), "-ar", str(sample_rate),
@@ -101,8 +102,9 @@ def has_audio_stream(path: Path) -> bool:
             "stream=index",
             "-of",
             "csv=p=0",
+            *FFMPEG_PROTOCOL_WHITELIST,
             "-i",
-            str(path),
+            str(path.absolute()),
         ],
         capture_output=True,
         text=True,

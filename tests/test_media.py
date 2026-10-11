@@ -52,7 +52,8 @@ def test_missing_source_yields_nothing(tmp_path: Path, settings: Settings) -> No
 def test_enhance_command_passes_paths_verbatim_and_drops_video() -> None:
     tricky = Path("my clip; rm -rf x.mp4")
     cmd = build_enhance_command(tricky, Path("out.wav"), "highpass=f=80", 16_000)
-    assert cmd[cmd.index("-i") + 1] == str(tricky)
+    assert cmd[cmd.index("-i") + 1] == str(tricky.absolute())  # absolute: can never parse as a protocol
+    assert cmd[cmd.index("-protocol_whitelist") + 1] == "file"
     assert cmd[cmd.index("-af") + 1] == "highpass=f=80"
     assert cmd[cmd.index("-ar") + 1] == "16000"
     assert "-vn" in cmd

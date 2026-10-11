@@ -96,7 +96,7 @@ def _process(
             if enh.enabled
             else job.media.path
         )
-        result = transcriber.run(str(source))
+        result = transcriber.run(str(source.absolute()))
         if not result["segments"]:
             manifest.warnings.append(f"{job.media.path.name}: no speech detected, wrote empty outputs.")
             log.warning(manifest.warnings[-1])

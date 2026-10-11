@@ -23,7 +23,7 @@ Searched in this order; the later file overrides the earlier one:
    - Windows: `%LOCALAPPDATA%\scriber\config.toml`
 2. `./scriber.toml` (per project, gitignored)
 
-`scriber doctor` prints which config files were loaded. Paths in config files and arguments may start with `~`
+`scriber doctor` and `scriber run` print which config files were loaded. Paths in config files and arguments may start with `~`
 (expanded on every OS) and are otherwise relative to the folder you run `scriber` from. Both `/` and `\` separators
 work on Windows. Text outputs are always UTF-8 with LF line endings, whatever the OS.
 
@@ -100,3 +100,10 @@ standard `HF_TOKEN`. Do not put it in a TOML file.
 `describe` ever disagree, `describe` is right.
 
 Invalid values (for example `batch_size = 0`) are rejected with a clear message and exit code 2.
+
+## Security note
+
+`./scriber.toml` and `.env` in the current folder are loaded automatically. A config can change which models are
+downloaded (`diarization.model`, `model.name`) and the ffmpeg filter. Do not run `scriber` inside a folder you do not
+trust without checking those files first; `scriber run` logs every config file it loads. Media paths are always passed
+to ffmpeg as absolute local files with a `file`-only protocol whitelist.

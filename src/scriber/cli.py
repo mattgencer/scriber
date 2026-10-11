@@ -111,6 +111,8 @@ def run(
         "diarization.max_speakers": max_speakers,
     }
     settings = _load(config, nest(values))
+    for config_file in user_config_files(config):
+        log.info("Using config file %s", config_file.absolute())
     glossary = [*settings.glossary.terms, *(term or [])]
 
     media = find_media(sources or [settings.paths.input_dir], settings)

@@ -43,6 +43,8 @@ TEXT_NEWLINE: Final = "\n"
 FFMPEG: Final = "ffmpeg"
 FFPROBE: Final = "ffprobe"
 ENHANCE_CHANNELS: Final = 1
+# ffmpeg/ffprobe may only open plain files, never network or special protocols (concat:, http:, ...).
+FFMPEG_PROTOCOL_WHITELIST: Final = ("-protocol_whitelist", "file")
 
 
 class ExitCode(IntEnum):
