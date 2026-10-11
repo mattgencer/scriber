@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+.venv
+
+# Tool caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.hypothesis/
+
+# Private data: media in, transcripts out, secrets, personal config
+input/
+output/
+recordings/
+transcripts/
+*.enhanced.wav
+.env
+scriber.toml
+
+# Local agent state
+.claude/*.log
+.claude/settings.local.json

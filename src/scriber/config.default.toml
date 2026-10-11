@@ -1,0 +1,53 @@
+# Packaged defaults: the single source of every tunable value.
+# Do not edit in place. Copy the keys you want to change into ./scriber.toml, or override via
+# SCRIBER_<SECTION>__<KEY> environment variables, or CLI flags. See docs/CONFIGURATION.md.
+
+[paths]
+input_dir = "input"    # scanned when `scriber run` gets no source
+output_dir = "output"
+
+[output]
+# Any of: txt, srt, vtt, tsv, json
+formats = ["txt", "srt", "json"]
+# per-file-folder: output/<name>/<name>.<fmt>   flat: output/<name>.<fmt>   mirror: keeps the input folder tree
+layout = "per-file-folder"
+skip_existing = true   # skip a file when every requested output already exists
+
+[model]
+name = "large-v3"
+device = "auto"        # auto | cuda | cpu
+compute_type = "auto"  # auto = float16 on cuda, int8 on cpu. Or any CTranslate2 type, e.g. float32
+batch_size = 16        # lower this if the GPU runs out of memory
+language = "en"        # ISO code, or "auto" to detect per file
+
+[asr]
+# Whisper decoding. condition_on_previous_text=false stops one bad segment cascading into repeated text.
+beam_size = 5
+condition_on_previous_text = false
+no_speech_threshold = 0.6
+compression_ratio_threshold = 2.4
+
+[diarization]
+# Speaker labels need a Hugging Face token (HF_TOKEN) with access to this gated model.
+model = "pyannote/speaker-diarization-community-1"
+# Optional hints: num_speakers, min_speakers, max_speakers
+
+[enhance]
+# Mild cleanup for noisy recordings: cut rumble below 80 Hz, light denoise, even out loudness.
+enabled = false
+ffmpeg_filter = "highpass=f=80,afftdn=nf=-25,dynaudnorm=f=150:g=15"
+sample_rate = 16000
+
+[glossary]
+# Jargon fed to Whisper as a prompt. Do not put rare names here: they get hallucinated into other sentences.
+terms = []
+prompt_prefix = "Terms and names: "
+
+[subtitles]
+highlight_words = false
+# Optional: max_line_width, max_line_count
+
+[media]
+recursive = true
+audio_extensions = [".m4a", ".mp3", ".wav", ".ogg", ".opus", ".aac", ".flac", ".wma", ".amr", ".3gp"]
+video_extensions = [".mp4", ".mkv", ".webm", ".mov", ".avi", ".m4v", ".flv", ".wmv", ".ts", ".mpg", ".mpeg"]
