@@ -22,6 +22,11 @@ jobs:
       - uses: astral-sh/setup-uv@v6
 
       - uses: FedericoCarboni/setup-ffmpeg@v3
+        if: runner.os != 'macOS'  # the action has no Apple Silicon build
+
+      - name: Install ffmpeg (macOS)
+        if: runner.os == 'macOS'
+        run: brew install ffmpeg
 
       # Windows and Linux lock to CUDA 12.8 torch (multi-GB). CI has no GPU, so install the CPU build instead.
       - name: Install dependencies (CPU torch)
